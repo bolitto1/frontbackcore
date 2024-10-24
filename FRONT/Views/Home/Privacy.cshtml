@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<h1>@ViewData["Title"]</h1>
+<div class="demo-container">
+    <div id="gridContainer"></div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var grid = $("#gridContainer").dxDataGrid({
+                columns: [
+                    { dataField: "cedula", caption: "Cédula" },
+                    { dataField: "nombres", caption: "Nombres" },
+                    { dataField: "apellidos", caption: "Apellidos" },
+                    { dataField: "fechaRegistro", caption: "Fecha de Registro" }
+                ],
+                height: 400,
+                showBorders: true
+            }).dxDataGrid("instance");
+
+            var url = '@Url.Action("GetAll", "Home")';
+
+            // Llamar al método GetAll via AJAX
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function (data) {
+                    // Cargar datos en el grid
+                    grid.option("dataSource", data);
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error al cargar los clientes' + error
+                    });
+                }
+            });
+            
+        });
+    </script>
+}

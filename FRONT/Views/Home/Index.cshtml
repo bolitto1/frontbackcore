@@ -1,0 +1,108 @@
+﻿@{
+    ViewData["Title"] = "Consulta de Cliente";
+}
+
+<div class="container my-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <h1 class="text-center mb-4">Consulta de Cliente</h1>
+
+
+            <div class="form-group">
+                <label for="cedula">Número de cédula:</label>
+                <input type="text" class="form-control" id="cedula" placeholder="Ingrese número de cédula">
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary" id="btnBuscar">Buscar</button>
+            </div>
+
+            <div class="container my-5">
+
+                    <div class="row justify-content-center">
+
+                        <div class="col-md-12">
+
+                            <h1 class="text-center mb-4">Datos del Cliente</h1>
+ 
+                            <div class="form-group">
+                                <label for="txtCedula" class="control-label">Cédula</label>
+                                <input type="text" class="form-control" id="txtCedula" readonly />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="txtNombres" class="control-label">Nombres</label>
+                                <input type="text" class="form-control" id="txtNombres" readonly />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="txtApellidos" class="control-label">Apellidos</label>
+                                <input type="text" class="form-control" id="txtApellidos" readonly />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="txtFechaRegistro" class="control-label">Fecha de Registro</label>
+                                <input type="text" class="form-control" id="txtFechaRegistro" readonly />
+                            </div>
+
+                          
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+ 
+    <script>
+        $(document).ready(function () {
+            $('#btnBuscar').click(function () {
+                var cedula = $('#cedula').val().trim();
+
+                // Validar que cedula no esté vacía
+                if (cedula === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'La cédula no puede estar vacía'
+                    });
+                    return;
+                }
+
+
+                $.ajax({
+                    url: '@Url.Action("GetCliente", "Home")',
+                    type: 'GET',
+                    data: { cedula: cedula },
+                    success: function (data) {
+                        // Establecer los valores de los campos del formulario
+                        $('#txtCedula').val(data.cedula);
+                        $('#txtNombres').val(data.nombres);
+                        $('#txtApellidos').val(data.apellidos);
+                        $('#txtFechaRegistro').val(data.fechaRegistro);
+                    },
+                    error: function (xhr, status, error) {
+                        $('#txtCedula').val('');
+                        $('#txtNombres').val('');
+                        $('#txtApellidos').val('');
+                        $('#txtFechaRegistro').val('');
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Cedula no encontrada' + error
+                        });
+
+                    }
+                });
+            });
+        });
+    </script>
+}
